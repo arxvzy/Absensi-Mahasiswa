@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1702323962 source:e:\ittp\algoritma pemrograman\praktikum\pertemuan_8_praktikum\absensi-mahasiswa\main.cpp
+	<iostream>
+	<fstream>
+	<conio.h>
+	<cstdlib>
+
