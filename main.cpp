@@ -7,13 +7,13 @@ using namespace std;
 struct mahasiswa{
     string nama;
     long nim;
-    int kehadiran;
+    float kehadiran;
     int izin;
     int sakit;
     int alpa;
 };
-mahasiswa kelasa[40];
-int counter, pertemuan=1;
+mahasiswa kelasa[100];
+int counter, pertemuan=0;
 
 void addMahasiswa(){
     cout << "\nNama Mahasiswa: \n";
@@ -26,7 +26,7 @@ void addMahasiswa(){
 
 void showRekap(){
     for(int i=0; i<counter; i++){
-        int persentase = kelasa[i].kehadiran / 10 * 100;
+        float persentase = kelasa[i].kehadiran / pertemuan * 100;
         cout << "Nama : " << kelasa[i].nama << endl;
         cout << "NIM : " << kelasa[i].nim << endl;
         cout << "Jumlah Kehadiran : " << kelasa[i].kehadiran << endl;
@@ -57,23 +57,19 @@ void addPresensi(){
 }
 
 void saveData(){
-    fstream extFile;
+    ofstream extFile;
     extFile.open("data.txt");
     extFile << counter << endl;
-    if(extFile.is_open()){
-        for(int i=0; i<counter; i++){
-            extFile << kelasa[i].nama << endl;
-            extFile << kelasa[i].nim << endl;
-            extFile << kelasa[i].kehadiran << endl;
-            extFile << kelasa[i].izin << endl;
-            extFile << kelasa[i].sakit << endl;
-            extFile << kelasa[i].alpa << endl;
-        }
-        extFile.close();
-        cout << "\n\nData Berhasil Disimpan!\n\n";
-    } else {
-        cout << "\n\nFile Tidak Ditemukan!\n\n";
+    extFile << pertemuan << endl;
+    for(int i=0; i<counter; i++){
+        extFile << kelasa[i].nama << endl;
+        extFile << kelasa[i].nim << endl;
+        extFile << kelasa[i].kehadiran << endl;
+        extFile << kelasa[i].izin << endl;
+        extFile << kelasa[i].sakit << endl;
+        extFile << kelasa[i].alpa << endl;
     }
+    extFile.close();
 }
 
 void loadData(){
@@ -81,6 +77,7 @@ void loadData(){
     extFile.open("data.txt");
     if(extFile.is_open()){
         extFile >> counter;
+        extFile >> pertemuan;
         if(counter>0){
             for(int i=0; i<counter; i++){
                 extFile >> kelasa[i].nama;
@@ -90,20 +87,48 @@ void loadData(){
                 extFile >> kelasa[i].sakit;
                 extFile >> kelasa[i].alpa;
             }
-            extFile.close();
-            cout << "\n\nData Berhasil Dimuat!\n\n";
-        } else {
-            cout << "\n\nDatabase Kosong!\n\n";
         }
+    }
+    extFile.close();
+}
+
+void deleteMahasiswa(){
+    string namatoDelete;
+    cout << "Masukkan Nama Mahasiswa yang Ingin Dihapus: ";
+    getline(cin, namatoDelete);
+
+    int indexToDelete = -1;
+    for(int i=0; i<counter; i++){
+        if(kelasa[i].nama == namatoDelete){
+            indexToDelete = i;
+            break;
+        }
+    }
+
+    if(indexToDelete != -1){
+        // Geser elemen array untuk menutup celah
+        for(int i=indexToDelete; i<counter-1; i++){
+            kelasa[i] = kelasa[i+1];
+        }
+        counter--;
+        cout << "Data Mahasiswa Berhasil Dihapus!\n\n";
     } else {
-        cout << "\n\nFile Tidak Ditemukan!\n\n";
+        cout << "Mahasiswa dengan Nama Tersebut Tidak Ditemukan.\n\n";
     }
 }
+
+void dataMahasiswa(){
+    for(int i =0;i<counter;i++){
+        cout<< i+1 << ". " << kelasa[i].nama;
+        cout << "(" << kelasa[i].nim << ")\n";
+    }
+}
+
+
 int main()
 {
     char menuSelect, dashSelect;
     do{
-        cout << "JUMLAH PERTEMUAN = " << pertemuan << endl;
         cout << "JUMLAH MAHASISWA = " << counter << endl;
         cout << "======== MENU =======\n";
         cout << "1. DASHBOARD\n";
@@ -119,8 +144,8 @@ int main()
                 cout << "======== DASHBOARD =======\n";
                 cout << "1. TAMBAH DATA MAHASISWA\n";
                 cout << "2. PRESENSI MAHASISWA\n";
-                cout << "3. SIMPAN DATA MAHASISWA\n";
-                cout << "4. MUAT DATA MAHASISWA\n";
+                cout << "3. HAPUS DATA MAHASISWA\n";
+                cout << "4. TAMPILKAN LIST MAHASISWA\n";
                 cout << "5. KEMBALI\n";
                 cout << "PILIH MENU = ";
                 cin >> dashSelect;
@@ -128,19 +153,27 @@ int main()
                 cout << "\n\n";
 
                 if(dashSelect == '1'){
+                    loadData();
                     addMahasiswa();
+                    saveData();
                     system("pause");
                     system("cls");
                 } else if(dashSelect == '2'){
+                    cout << "PERTEMUAN KE-" << pertemuan+1 << endl;
+                    loadData();
                     addPresensi();
+                    saveData();
                     system("pause");
                     system("cls");
                 } else if(dashSelect == '3'){
+                    loadData();
+                    deleteMahasiswa();
                     saveData();
                     system("pause");
                     system("cls");
                 } else if(dashSelect == '4'){
                     loadData();
+                    dataMahasiswa();
                     system("pause");
                     system("cls");
                 } else if(dashSelect == '5'){
@@ -149,6 +182,7 @@ int main()
             } while(true);
             break;
         case '2':
+            loadData();
             showRekap();
             system("pause");
             system("cls");
