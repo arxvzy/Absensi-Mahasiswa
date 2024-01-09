@@ -1,3 +1,8 @@
+/* BUG:
+1. NAMA SAAT MELOAD DATA TIDAK BISA MEMBACA SPASI
+2. BELUM ADA POINT KE 5 (SORTING/SEARCH/POINTER)
+3. MERAPIHKAN KODINGAN
+*/
 #include <iostream>
 #include <fstream>
 #include <conio.h>
@@ -17,9 +22,11 @@ int counter, pertemuan=0;
 
 void addMahasiswa(){
     cout << "\nNama Mahasiswa: \n";
-    getline(cin, kelasa[counter].nama);
+    getline(cin, kelasa[counter].nama).ignore();
+    cin.ignore();
     cout << "\nNIM Mahasiswa: \n";
     cin >> kelasa[counter].nim;
+    cin.ignore();
     cout << "\nDATA BERHASIL DITAMBAH\n\n";
     counter++;
 }
@@ -42,6 +49,7 @@ void addPresensi(){
         cout << " (" << kelasa[i].nim <<")\n";
         cout << "H/I/S/A = ";
         cin >> presensi;
+        cin.ignore();
         if(presensi=='H'){
             kelasa[i].kehadiran++;
         } else if(presensi=='I'){
@@ -118,6 +126,7 @@ void deleteMahasiswa(){
 }
 
 void dataMahasiswa(){
+    cout << "LIST MAHASISWA:\n";
     for(int i =0;i<counter;i++){
         cout<< i+1 << ". " << kelasa[i].nama;
         cout << "(" << kelasa[i].nim << ")\n";
@@ -127,67 +136,52 @@ void dataMahasiswa(){
 
 int main()
 {
-    char menuSelect, dashSelect;
+    char menuSelect;
     do{
-        cout << "JUMLAH MAHASISWA = " << counter << endl;
         cout << "======== MENU =======\n";
-        cout << "1. DASHBOARD\n";
+        cout << "1. MENAMBAH DATA MAHASISWA\n";
         cout << "2. REKAP PRESENSI\n";
-        cout << "3. KELUAR\n";
+        cout << "3. PRESENSI MAHASISWA\n";
+        cout << "4. KELUAR\n";
         cout << "PILIH MENU = ";
         cin >> menuSelect;
         cin.ignore();
         cout << "\n\n";
         switch(menuSelect){
         case '1':
-            do{
-                cout << "======== DASHBOARD =======\n";
-                cout << "1. TAMBAH DATA MAHASISWA\n";
-                cout << "2. PRESENSI MAHASISWA\n";
-                cout << "3. HAPUS DATA MAHASISWA\n";
-                cout << "4. TAMPILKAN LIST MAHASISWA\n";
-                cout << "5. KEMBALI\n";
-                cout << "PILIH MENU = ";
-                cin >> dashSelect;
-                cin.ignore();
-                cout << "\n\n";
-
-                if(dashSelect == '1'){
-                    loadData();
-                    addMahasiswa();
-                    saveData();
-                    system("pause");
-                    system("cls");
-                } else if(dashSelect == '2'){
-                    cout << "PERTEMUAN KE-" << pertemuan+1 << endl;
-                    loadData();
-                    addPresensi();
-                    saveData();
-                    system("pause");
-                    system("cls");
-                } else if(dashSelect == '3'){
-                    loadData();
-                    deleteMahasiswa();
-                    saveData();
-                    system("pause");
-                    system("cls");
-                } else if(dashSelect == '4'){
-                    loadData();
-                    dataMahasiswa();
-                    system("pause");
-                    system("cls");
-                } else if(dashSelect == '5'){
-                    break;
-                }
-            } while(true);
-            break;
+            char confirm;
+            system("cls");
+            loadData();
+            cout << "JUMLAH MAHASISWA = " << counter << endl;
+            dataMahasiswa();
+            cout <<"\n\nMasukkan data mahasiswa? (y/n) = ";
+            cin  >> confirm;
+            cin.ignore();
+            if(confirm == 'Y'||confirm == 'y'){
+                addMahasiswa();
+                saveData();
+                system("pause");
+                system("cls");
+                break;
+            } else {
+                system("cls");
+                break;
+            }
         case '2':
             loadData();
+            cout << "JUMLAH PERTEMUAN = " << pertemuan << endl;
             showRekap();
             system("pause");
             system("cls");
             break;
         case '3':
+            loadData();
+            addPresensi();
+            saveData();
+            system("pause");
+            system("cls");
+            break;
+        case '4':
             exit(0);
         }
     } while (true);
