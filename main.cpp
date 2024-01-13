@@ -1,6 +1,5 @@
 #include <iostream>
 #include <fstream>
-#include <conio.h>
 #include <cstdlib>
 using namespace std;
 
@@ -14,49 +13,6 @@ struct mahasiswa{
 };
 mahasiswa kelasa[100];
 int counter, pertemuan=0;
-
-void addMahasiswa(){
-    cout << "\nNama Mahasiswa: \n";
-    cin >> kelasa[counter].nama;
-    cin.ignore();
-    cout << "\nNIM Mahasiswa: \n";
-    cin >> kelasa[counter].nim;
-    cin.ignore();
-    cout << "\nDATA BERHASIL DITAMBAH\n\n";
-    counter++;
-}
-
-void showRekap(){
-    for(int i=0; i<counter; i++){
-        float persentase = kelasa[i].kehadiran / pertemuan * 100;
-        cout << "Nama : " << kelasa[i].nama << endl;
-        cout << "NIM : " << kelasa[i].nim << endl;
-        cout << "Jumlah Kehadiran : " << kelasa[i].kehadiran << endl;
-        cout << "Persentase Kehadiran : " << persentase <<"%\n\n";
-    }
-}
-
-void addPresensi(){
-    for(int i=0; i<counter; i++){
-        char presensi;
-        cout << "Nama: " << kelasa[i].nama;
-        cout << " (" << kelasa[i].nim <<")\n";
-        cout << "H/I/S/A = ";
-        cin >> presensi;
-        cin.ignore();
-        if(presensi=='H' || presensi=='h'){
-            kelasa[i].kehadiran++;
-        } else if(presensi=='I' || presensi=='i'){
-            kelasa[i].izin++;
-        } else if(presensi=='S' || presensi=='s'){
-            kelasa[i].sakit++;
-        } else if(presensi=='A' || presensi=='a'){
-            kelasa[i].alpa++;
-        }
-        cout << "\n\n";
-    }
-    pertemuan++;
-}
 
 void saveData(){
     ofstream extFile;
@@ -92,14 +48,6 @@ void loadData(){
         }
     }
     extFile.close();
-}
-
-void dataMahasiswa(){
-    cout << "LIST MAHASISWA:\n";
-    for(int i =0;i<counter;i++){
-        cout<< i+1 << ". " << kelasa[i].nama;
-        cout << "(" << kelasa[i].nim << ")\n";
-    }
 }
 
 void bubblesortNIM(){
@@ -151,12 +99,27 @@ int main()
             loadData();
             cout << "JUMLAH MAHASISWA = " << counter << endl;
             bubblesortNIM();
-            dataMahasiswa();
-            cout <<"\n\nMasukkan data mahasiswa? (y/n) = ";
+            // MENAMPILKAN DATA MAHASISWA START
+            cout << "LIST MAHASISWA:\n";
+            for(int i =0;i<counter;i++){
+                cout<< i+1 << ". " << kelasa[i].nama;
+                cout << "(" << kelasa[i].nim << ")\n";
+            }
+            // MENAMPILKAN DATA MAHASISWA END
+            cout <<"\n\nKonfirmasi Untuk Menambah Mahasiswa (Y/N) = ";
             cin  >> confirm;
             cin.ignore();
+            // MENAMBAH DATA MAHASISWA START
             if(confirm == 'Y'||confirm == 'y'){
-                addMahasiswa();
+                cout << "\nNama Mahasiswa: \n";
+                cin >> kelasa[counter].nama;
+                cin.ignore();
+                cout << "\nNIM Mahasiswa: \n";
+                cin >> kelasa[counter].nim;
+                cin.ignore();
+                cout << "\nDATA BERHASIL DITAMBAH\n\n";
+                counter++;
+                // MENAMBAH DATA MAHASISWA END
                 saveData();
                 system("pause");
                 system("cls");
@@ -172,9 +135,18 @@ int main()
             cout << "JUMLAH PERTEMUAN = " << pertemuan << endl;
             loadData();
             bubblesortNIM();
-            showRekap();
+            // MENAMPILKAN REKAP PRESENSI START
+            for(int i=0; i<counter; i++){
+                float persentase = kelasa[i].kehadiran / pertemuan * 100;
+                cout << "Nama : " << kelasa[i].nama << endl;
+                cout << "NIM : " << kelasa[i].nim << endl;
+                cout << "Jumlah Kehadiran : " << kelasa[i].kehadiran << endl;
+                cout << "Persentase Kehadiran : " << persentase <<"%\n\n";
+            }
+            // MENAMPILKAN REKAP PRESENSI END
             cout <<"Cari Mahasiswa Berdasarkan NIM? (Y/N) = ";
             cin >> persetujuan;
+            // FITUR MENCARI REKAP MAHASISWA START
             if (persetujuan == 'Y'|| persetujuan == 'y'){
                 cout << "NIM Mahasiswa Yang Dicari = ";
                 cin >> targetNIM;
@@ -196,12 +168,33 @@ int main()
                 system("pause");
                 system("cls");
             }
+            // FITUR MENCARI REKAP MAHASISWA END
             break;
             }
         case '3':
             loadData();
             bubblesortNIM();
-            addPresensi();
+            // FITUR PRESENSI
+            for(int i=0; i<counter; i++){
+                char presensi;
+                cout << "Nama: " << kelasa[i].nama;
+                cout << " (" << kelasa[i].nim <<")\n";
+                cout << "H/I/S/A = ";
+                cin >> presensi;
+                cin.ignore();
+                if(presensi=='H' || presensi=='h'){
+                    kelasa[i].kehadiran++;
+                } else if(presensi=='I' || presensi=='i'){
+                    kelasa[i].izin++;
+                } else if(presensi=='S' || presensi=='s'){
+                    kelasa[i].sakit++;
+                } else if(presensi=='A' || presensi=='a'){
+                    kelasa[i].alpa++;
+                }
+                cout << "\n\n";
+            }
+            pertemuan++;
+
             saveData();
             system("pause");
             system("cls");
