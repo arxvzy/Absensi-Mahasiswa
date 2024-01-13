@@ -1,8 +1,3 @@
-/* BUG:
-1. NAMA SAAT MELOAD DATA TIDAK BISA MEMBACA SPASI
-2. BELUM ADA POINT KE 5 (SORTING/SEARCH/POINTER)
-3. MERAPIHKAN KODINGAN
-*/
 #include <iostream>
 #include <fstream>
 #include <conio.h>
@@ -22,7 +17,7 @@ int counter, pertemuan=0;
 
 void addMahasiswa(){
     cout << "\nNama Mahasiswa: \n";
-    getline(cin, kelasa[counter].nama).ignore();
+    cin >> kelasa[counter].nama;
     cin.ignore();
     cout << "\nNIM Mahasiswa: \n";
     cin >> kelasa[counter].nim;
@@ -37,8 +32,7 @@ void showRekap(){
         cout << "Nama : " << kelasa[i].nama << endl;
         cout << "NIM : " << kelasa[i].nim << endl;
         cout << "Jumlah Kehadiran : " << kelasa[i].kehadiran << endl;
-        cout << "Persentase Kehadiran : " << persentase <<"%";
-        cout << endl << endl;
+        cout << "Persentase Kehadiran : " << persentase <<"%\n\n";
     }
 }
 
@@ -50,13 +44,13 @@ void addPresensi(){
         cout << "H/I/S/A = ";
         cin >> presensi;
         cin.ignore();
-        if(presensi=='H'){
+        if(presensi=='H' || presensi=='h'){
             kelasa[i].kehadiran++;
-        } else if(presensi=='I'){
+        } else if(presensi=='I' || presensi=='i'){
             kelasa[i].izin++;
-        } else if(presensi=='S'){
+        } else if(presensi=='S' || presensi=='s'){
             kelasa[i].sakit++;
-        } else if(presensi=='A'){
+        } else if(presensi=='A' || presensi=='a'){
             kelasa[i].alpa++;
         }
         cout << "\n\n";
@@ -100,31 +94,6 @@ void loadData(){
     extFile.close();
 }
 
-void deleteMahasiswa(){
-    string namatoDelete;
-    cout << "Masukkan Nama Mahasiswa yang Ingin Dihapus: ";
-    getline(cin, namatoDelete);
-
-    int indexToDelete = -1;
-    for(int i=0; i<counter; i++){
-        if(kelasa[i].nama == namatoDelete){
-            indexToDelete = i;
-            break;
-        }
-    }
-
-    if(indexToDelete != -1){
-        // Geser elemen array untuk menutup celah
-        for(int i=indexToDelete; i<counter-1; i++){
-            kelasa[i] = kelasa[i+1];
-        }
-        counter--;
-        cout << "Data Mahasiswa Berhasil Dihapus!\n\n";
-    } else {
-        cout << "Mahasiswa dengan Nama Tersebut Tidak Ditemukan.\n\n";
-    }
-}
-
 void dataMahasiswa(){
     cout << "LIST MAHASISWA:\n";
     for(int i =0;i<counter;i++){
@@ -133,6 +102,34 @@ void dataMahasiswa(){
     }
 }
 
+void bubblesortNIM(){
+    for (int i = 0; i < counter - 1; i++) {
+        for (int j = 0; j < counter - i - 1; j++) {
+            if (kelasa[j].nim > kelasa[j + 1].nim) {
+                mahasiswa temp = kelasa[j];
+                kelasa[j] = kelasa[j + 1];
+                kelasa[j + 1] = temp;
+            }
+        }
+    }
+}
+int binarysearchNIM(long targetNIM){
+    int left = 0, right = counter - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (kelasa[mid].nim == targetNIM) {
+            return mid;
+        } else if (kelasa[mid].nim < targetNIM) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+
+    return -1;
+}
 
 int main()
 {
@@ -153,6 +150,7 @@ int main()
             system("cls");
             loadData();
             cout << "JUMLAH MAHASISWA = " << counter << endl;
+            bubblesortNIM();
             dataMahasiswa();
             cout <<"\n\nMasukkan data mahasiswa? (y/n) = ";
             cin  >> confirm;
@@ -168,14 +166,41 @@ int main()
                 break;
             }
         case '2':
-            loadData();
+            {
+            long targetNIM;
+            char persetujuan;
             cout << "JUMLAH PERTEMUAN = " << pertemuan << endl;
+            loadData();
+            bubblesortNIM();
             showRekap();
-            system("pause");
-            system("cls");
+            cout <<"Cari Mahasiswa Berdasarkan NIM? (Y/N) = ";
+            cin >> persetujuan;
+            if (persetujuan == 'Y'|| persetujuan == 'y'){
+                cout << "NIM Mahasiswa Yang Dicari = ";
+                cin >> targetNIM;
+                cout << "\n\n";
+                int searchNIM = binarysearchNIM(targetNIM);
+                if(searchNIM!=1){
+                    cout << "Mahasiswa Ditemukan:\n";
+                    cout << "Nama: " << kelasa[searchNIM].nama << endl;
+                    cout << "NIM : " << kelasa[searchNIM].nim << endl;
+                    cout << "Jumlah Hadir: " << kelasa[searchNIM].kehadiran << endl;
+                    cout << "Persentase Kehadiran: "<<(kelasa[searchNIM ].kehadiran/pertemuan*100)<<"%\n";
+                    system("pause");
+                    system("cls");
+                } else {
+                    cout <<"Mahasiswa Tidak Ditemukan";
+                    system("pause");
+                    system("cls");}
+            } else {
+                system("pause");
+                system("cls");
+            }
             break;
+            }
         case '3':
             loadData();
+            bubblesortNIM();
             addPresensi();
             saveData();
             system("pause");
@@ -183,6 +208,11 @@ int main()
             break;
         case '4':
             exit(0);
+        default :
+            cout << "Pilih Menu Sesuai Pilihan Di Atas!\n\n";
+            system("pause");
+            system("cls");
+            break;
         }
     } while (true);
     return 0;
