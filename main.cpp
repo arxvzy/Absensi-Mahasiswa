@@ -11,71 +11,70 @@ struct mahasiswa{
     int sakit;
     int alpa;
 };
-mahasiswa kelasa[100];
-int counter, pertemuan=0;
+mahasiswa kelas[100];
+int jumlahMahasiswa, pertemuan=0;
 
 void saveData(){
-    ofstream extFile;
-    ofstream namaFile;
-    extFile.open("data.txt");
-    namaFile.open("datanama.txt");
-    extFile << counter << endl;
-    extFile << pertemuan << endl;
-    for(int i=0; i<counter; i++){
-        //extFile << kelasa[i].nama << endl;
-        namaFile << kelasa[i].nama << endl;
-        extFile << kelasa[i].nim << endl;
-        extFile << kelasa[i].kehadiran << endl;
-        extFile << kelasa[i].izin << endl;
-        extFile << kelasa[i].sakit << endl;
-        extFile << kelasa[i].alpa << endl;
+    ofstream dataNumerik;
+    ofstream dataNama;
+    dataNumerik.open("data.txt");
+    dataNama.open("datanama.txt");
+    dataNumerik << jumlahMahasiswa << endl;
+    dataNumerik << pertemuan << endl;
+    for(int i=0; i<jumlahMahasiswa; i++){
+        dataNama << kelas[i].nama << endl;
+        dataNumerik << kelas[i].nim << endl;
+        dataNumerik << kelas[i].kehadiran << endl;
+        dataNumerik << kelas[i].izin << endl;
+        dataNumerik << kelas[i].sakit << endl;
+        dataNumerik << kelas[i].alpa << endl;
     }
-    extFile.close();
+    dataNumerik.close();
 }
 
 void loadData(){
-    fstream extFile;
-    fstream namaFile;
-    extFile.open("data.txt");
-    namaFile.open("datanama.txt");
-    if(extFile.is_open()){
-        extFile >> counter;
-        extFile >> pertemuan;
-        if(counter>0){
-            for(int i=0; i<counter; i++){
-                getline(namaFile, kelasa[i].nama);
-                extFile >> kelasa[i].nim;
-                extFile >> kelasa[i].kehadiran;
-                extFile >> kelasa[i].izin;
-                extFile >> kelasa[i].sakit;
-                extFile >> kelasa[i].alpa;
+    fstream dataNumerik;
+    fstream dataNama;
+    dataNumerik.open("data.txt");
+    dataNama.open("datanama.txt");
+    if(dataNumerik.is_open()){
+        dataNumerik >> jumlahMahasiswa;
+        dataNumerik >> pertemuan;
+        if(jumlahMahasiswa>0){
+            for(int i=0; i<jumlahMahasiswa; i++){
+                getline(dataNama, kelas[i].nama);
+                dataNumerik >> kelas[i].nim;
+                dataNumerik >> kelas[i].kehadiran;
+                dataNumerik >> kelas[i].izin;
+                dataNumerik >> kelas[i].sakit;
+                dataNumerik >> kelas[i].alpa;
             }
         }
     }
-    namaFile.close();
-    extFile.close();
+    dataNama.close();
+    dataNumerik.close();
 }
 
-void bubblesortNIM(){
-    for (int i = 0; i < counter - 1; i++) {
-        for (int j = 0; j < counter - i - 1; j++) {
-            if (kelasa[j].nim > kelasa[j + 1].nim) {
-                mahasiswa temp = kelasa[j];
-                kelasa[j] = kelasa[j + 1];
-                kelasa[j + 1] = temp;
+void sortByNim(){
+    for (int i = 0; i < jumlahMahasiswa - 1; i++) {
+        for (int j = 0; j < jumlahMahasiswa - i - 1; j++) {
+            if (kelas[j].nim > kelas[j + 1].nim) {
+                mahasiswa tempIndex = kelas[j];
+                kelas[j] = kelas[j + 1];
+                kelas[j + 1] = tempIndex;
             }
         }
     }
 }
 
-int binarysearchNIM(long targetNIM){
-    int left = 0, right = counter - 1;
+int searchByNim(long nim){
+    int left = 0, right = jumlahMahasiswa - 1;
     while (left <= right) {
         int mid = left + (right - left) / 2;
 
-        if (kelasa[mid].nim == targetNIM) {
+        if (kelas[mid].nim == nim) {
             return mid;
-        } else if (kelasa[mid].nim < targetNIM) {
+        } else if (kelas[mid].nim < nim) {
             left = mid + 1;
         } else {
             right = mid - 1;
@@ -99,33 +98,33 @@ int main()
         cout << "\n\n";
         switch(menuSelect){
         case '1':
-            char confirm;
+            char confirmAdd;
             system("cls");
             loadData();
-            cout << "JUMLAH MAHASISWA = " << counter << endl;
-            bubblesortNIM();
+            cout << "JUMLAH MAHASISWA = " << jumlahMahasiswa << endl;
+            sortByNim();
             // MENAMPILKAN DATA MAHASISWA START
             cout << "LIST MAHASISWA:\n";
-            for(int i =0;i<counter;i++){
-                cout<< i+1 << ". " << kelasa[i].nama;
-                cout << "(" << kelasa[i].nim << ")\n";
+            for(int i =0;i<jumlahMahasiswa;i++){
+                cout<< i+1 << ". " << kelas[i].nama;
+                cout << "(" << kelas[i].nim << ")\n";
             }
             cout <<"\n\nKonfirmasi Untuk Menambah Mahasiswa (Y/N) = ";
-            cin  >> confirm;
+            cin  >> confirmAdd;
             cin.ignore();
             // MENAMBAH DATA MAHASISWA START
-            if(confirm == 'Y'||confirm == 'y'){
+            if(confirmAdd == 'Y'||confirmAdd == 'y'){
                 cout << "\nNama Mahasiswa: \n";
-                getline(cin,kelasa[counter].nama);
+                getline(cin,kelas[jumlahMahasiswa].nama);
                 cout << "\nNIM Mahasiswa: \n";
-                cin >> kelasa[counter].nim;
+                cin >> kelas[jumlahMahasiswa].nim;
                 cin.ignore();
-                int searchNIM = binarysearchNIM(kelasa[counter].nim);
-                if(searchNIM != -1){
+                int response = searchByNim(kelas[jumlahMahasiswa].nim);
+                if(response != -1){
                     cout << "\nMAHASISWA DENGAN NIM TERSEBUT SUDAH ADA\n\n";
                 } else {
                     cout << "\nDATA BERHASIL DITAMBAH\n\n";
-                    counter++;
+                    jumlahMahasiswa++;
                     saveData();
                 }
             }
@@ -133,21 +132,21 @@ int main()
             system("cls");
             break;
         case '2':
-            long targetNIM;
+            long cariNim;
             char persetujuan;
             cout << "JUMLAH PERTEMUAN = " << pertemuan << endl;
             loadData();
-            bubblesortNIM();
+            sortByNim();
             // MENAMPILKAN REKAP PRESENSI START
-            for(int i=0; i<counter; i++){
-                float persentase = kelasa[i].kehadiran / pertemuan * 100;
-                cout << "Nama : " << kelasa[i].nama << endl;
-                cout << "NIM : " << kelasa[i].nim << endl;
+            for(int i=0; i<jumlahMahasiswa; i++){
+                float persentase = kelas[i].kehadiran / pertemuan * 100;
+                cout << "Nama : " << kelas[i].nama << endl;
+                cout << "NIM : " << kelas[i].nim << endl;
                 cout << "Persentase Kehadiran : " << persentase <<"%\n";
-                cout << "Jumlah Kehadiran : " << kelasa[i].kehadiran << endl;
-                cout << "Jumlah Izin : "<<kelasa[i].izin<<endl;
-                cout << "Jumlah Sakit : "<<kelasa[i].sakit<<endl;
-                cout << "Jumlah Alpa : " << kelasa[i].alpa<< "\n\n";
+                cout << "Jumlah Kehadiran : " << kelas[i].kehadiran << endl;
+                cout << "Jumlah Izin : "<<kelas[i].izin<<endl;
+                cout << "Jumlah Sakit : "<<kelas[i].sakit<<endl;
+                cout << "Jumlah Alpa : " << kelas[i].alpa<< "\n\n";
             }
             cout <<"Cari Mahasiswa Berdasarkan NIM? (Y/N) = ";
             cin >> persetujuan;
@@ -155,19 +154,19 @@ int main()
             // FITUR MENCARI REKAP MAHASISWA START
             if (persetujuan == 'Y'|| persetujuan == 'y'){
                 cout << "NIM Mahasiswa Yang Dicari = ";
-                cin >> targetNIM;
+                cin >> cariNim;
                 cin.ignore();
                 cout << "\n\n";
-                int searchNIM = binarysearchNIM(targetNIM);
-                if(searchNIM != -1){
+                int response = searchByNim(cariNim);
+                if(response != -1){
                     cout << "Mahasiswa Ditemukan:\n";
-                    cout << "Nama: " << kelasa[searchNIM].nama << endl;
-                    cout << "NIM : " << kelasa[searchNIM].nim << endl;
-                    cout << "Jumlah Izin : "<< kelasa[searchNIM].izin<<endl;
-                    cout << "Jumlah Sakit : "<< kelasa[searchNIM].sakit<<endl;
-                    cout << "Jumlah Alpa : " << kelasa[searchNIM].alpa<< endl;
-                    cout << "Jumlah Hadir: " << kelasa[searchNIM].kehadiran << endl;
-                    cout << "Persentase Kehadiran: " << (kelasa[searchNIM].kehadiran/pertemuan*100)<<"%\n\n";
+                    cout << "Nama: " << kelas[response].nama << endl;
+                    cout << "NIM : " << kelas[response].nim << endl;
+                    cout << "Jumlah Izin : "<< kelas[response].izin<<endl;
+                    cout << "Jumlah Sakit : "<< kelas[response].sakit<<endl;
+                    cout << "Jumlah Alpa : " << kelas[response].alpa<< endl;
+                    cout << "Jumlah Hadir: " << kelas[response].kehadiran << endl;
+                    cout << "Persentase Kehadiran: " << (kelas[response].kehadiran/pertemuan*100)<<"%\n\n";
                 } else {
                     cout << "Mahasiswa Tidak Ditemukan\n\n";
                 }
@@ -177,23 +176,23 @@ int main()
             break;
         case '3':
             loadData();
-            bubblesortNIM();
+            sortByNim();
             // FITUR PRESENSI
-            for(int i=0; i<counter; i++){
+            for(int i=0; i<jumlahMahasiswa; i++){
                 char presensi;
-                cout << "Nama: " << kelasa[i].nama;
-                cout << " (" << kelasa[i].nim <<")\n";
+                cout << "Nama: " << kelas[i].nama;
+                cout << " (" << kelas[i].nim <<")\n";
                 cout << "H/I/S/A = ";
                 cin >> presensi;
                 cin.ignore();
                 if(presensi=='H' || presensi=='h'){
-                    kelasa[i].kehadiran++;
+                    kelas[i].kehadiran++;
                 } else if(presensi=='I' || presensi=='i'){
-                    kelasa[i].izin++;
+                    kelas[i].izin++;
                 } else if(presensi=='S' || presensi=='s'){
-                    kelasa[i].sakit++;
+                    kelas[i].sakit++;
                 } else if(presensi=='A' || presensi=='a'){
-                    kelasa[i].alpa++;
+                    kelas[i].alpa++;
                 }
                 cout << "\n\n";
             }
