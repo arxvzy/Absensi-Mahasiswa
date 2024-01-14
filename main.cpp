@@ -63,7 +63,6 @@ void bubblesortNIM(){
 }
 int binarysearchNIM(long targetNIM){
     int left = 0, right = counter - 1;
-
     while (left <= right) {
         int mid = left + (right - left) / 2;
 
@@ -105,7 +104,6 @@ int main()
                 cout<< i+1 << ". " << kelasa[i].nama;
                 cout << "(" << kelasa[i].nim << ")\n";
             }
-            // MENAMPILKAN DATA MAHASISWA END
             cout <<"\n\nKonfirmasi Untuk Menambah Mahasiswa (Y/N) = ";
             cin  >> confirm;
             cin.ignore();
@@ -117,19 +115,19 @@ int main()
                 cout << "\nNIM Mahasiswa: \n";
                 cin >> kelasa[counter].nim;
                 cin.ignore();
-                cout << "\nDATA BERHASIL DITAMBAH\n\n";
-                counter++;
-                // MENAMBAH DATA MAHASISWA END
-                saveData();
-                system("pause");
-                system("cls");
-                break;
-            } else {
-                system("cls");
-                break;
+                int searchNIM = binarysearchNIM(kelasa[counter].nim);
+                if(searchNIM != -1){
+                    cout << "\nMAHASISWA DENGAN NIM TERSEBUT SUDAH ADA\n\n";
+                } else {
+                    cout << "\nDATA BERHASIL DITAMBAH\n\n";
+                    counter++;
+                    saveData();
+                }
             }
+            system("pause");
+            system("cls");
+            break;
         case '2':
-            {
             long targetNIM;
             char persetujuan;
             cout << "JUMLAH PERTEMUAN = " << pertemuan << endl;
@@ -143,34 +141,29 @@ int main()
                 cout << "Jumlah Kehadiran : " << kelasa[i].kehadiran << endl;
                 cout << "Persentase Kehadiran : " << persentase <<"%\n\n";
             }
-            // MENAMPILKAN REKAP PRESENSI END
             cout <<"Cari Mahasiswa Berdasarkan NIM? (Y/N) = ";
             cin >> persetujuan;
+            cin.ignore();
             // FITUR MENCARI REKAP MAHASISWA START
             if (persetujuan == 'Y'|| persetujuan == 'y'){
                 cout << "NIM Mahasiswa Yang Dicari = ";
                 cin >> targetNIM;
+                cin.ignore();
                 cout << "\n\n";
                 int searchNIM = binarysearchNIM(targetNIM);
-                if(searchNIM!=1){
+                if(searchNIM != -1){
                     cout << "Mahasiswa Ditemukan:\n";
                     cout << "Nama: " << kelasa[searchNIM].nama << endl;
                     cout << "NIM : " << kelasa[searchNIM].nim << endl;
                     cout << "Jumlah Hadir: " << kelasa[searchNIM].kehadiran << endl;
-                    cout << "Persentase Kehadiran: "<<(kelasa[searchNIM ].kehadiran/pertemuan*100)<<"%\n";
-                    system("pause");
-                    system("cls");
+                    cout << "Persentase Kehadiran: " << (kelasa[searchNIM].kehadiran/pertemuan*100)<<"%\n\n";
                 } else {
-                    cout <<"Mahasiswa Tidak Ditemukan";
-                    system("pause");
-                    system("cls");}
-            } else {
-                system("pause");
-                system("cls");
+                    cout << "Mahasiswa Tidak Ditemukan\n\n";
+                }
             }
-            // FITUR MENCARI REKAP MAHASISWA END
+            system("pause");
+            system("cls");
             break;
-            }
         case '3':
             loadData();
             bubblesortNIM();
