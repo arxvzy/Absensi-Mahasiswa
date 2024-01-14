@@ -16,11 +16,14 @@ int counter, pertemuan=0;
 
 void saveData(){
     ofstream extFile;
+    ofstream namaFile;
     extFile.open("data.txt");
+    namaFile.open("datanama.txt");
     extFile << counter << endl;
     extFile << pertemuan << endl;
     for(int i=0; i<counter; i++){
-        extFile << kelasa[i].nama << endl;
+        //extFile << kelasa[i].nama << endl;
+        namaFile << kelasa[i].nama << endl;
         extFile << kelasa[i].nim << endl;
         extFile << kelasa[i].kehadiran << endl;
         extFile << kelasa[i].izin << endl;
@@ -32,13 +35,15 @@ void saveData(){
 
 void loadData(){
     fstream extFile;
+    fstream namaFile;
     extFile.open("data.txt");
+    namaFile.open("datanama.txt");
     if(extFile.is_open()){
         extFile >> counter;
         extFile >> pertemuan;
         if(counter>0){
             for(int i=0; i<counter; i++){
-                extFile >> kelasa[i].nama;
+                getline(namaFile, kelasa[i].nama);
                 extFile >> kelasa[i].nim;
                 extFile >> kelasa[i].kehadiran;
                 extFile >> kelasa[i].izin;
@@ -47,6 +52,7 @@ void loadData(){
             }
         }
     }
+    namaFile.close();
     extFile.close();
 }
 
@@ -61,6 +67,7 @@ void bubblesortNIM(){
         }
     }
 }
+
 int binarysearchNIM(long targetNIM){
     int left = 0, right = counter - 1;
     while (left <= right) {
@@ -74,7 +81,6 @@ int binarysearchNIM(long targetNIM){
             right = mid - 1;
         }
     }
-
     return -1;
 }
 
@@ -110,8 +116,7 @@ int main()
             // MENAMBAH DATA MAHASISWA START
             if(confirm == 'Y'||confirm == 'y'){
                 cout << "\nNama Mahasiswa: \n";
-                cin >> kelasa[counter].nama;
-                cin.ignore();
+                getline(cin,kelasa[counter].nama);
                 cout << "\nNIM Mahasiswa: \n";
                 cin >> kelasa[counter].nim;
                 cin.ignore();
@@ -138,8 +143,11 @@ int main()
                 float persentase = kelasa[i].kehadiran / pertemuan * 100;
                 cout << "Nama : " << kelasa[i].nama << endl;
                 cout << "NIM : " << kelasa[i].nim << endl;
+                cout << "Persentase Kehadiran : " << persentase <<"%\n";
                 cout << "Jumlah Kehadiran : " << kelasa[i].kehadiran << endl;
-                cout << "Persentase Kehadiran : " << persentase <<"%\n\n";
+                cout << "Jumlah Izin : "<<kelasa[i].izin<<endl;
+                cout << "Jumlah Sakit : "<<kelasa[i].sakit<<endl;
+                cout << "Jumlah Alpa : " << kelasa[i].alpa<< "\n\n";
             }
             cout <<"Cari Mahasiswa Berdasarkan NIM? (Y/N) = ";
             cin >> persetujuan;
@@ -155,6 +163,9 @@ int main()
                     cout << "Mahasiswa Ditemukan:\n";
                     cout << "Nama: " << kelasa[searchNIM].nama << endl;
                     cout << "NIM : " << kelasa[searchNIM].nim << endl;
+                    cout << "Jumlah Izin : "<< kelasa[searchNIM].izin<<endl;
+                    cout << "Jumlah Sakit : "<< kelasa[searchNIM].sakit<<endl;
+                    cout << "Jumlah Alpa : " << kelasa[searchNIM].alpa<< endl;
                     cout << "Jumlah Hadir: " << kelasa[searchNIM].kehadiran << endl;
                     cout << "Persentase Kehadiran: " << (kelasa[searchNIM].kehadiran/pertemuan*100)<<"%\n\n";
                 } else {
@@ -187,7 +198,6 @@ int main()
                 cout << "\n\n";
             }
             pertemuan++;
-
             saveData();
             system("pause");
             system("cls");
