@@ -30,6 +30,7 @@ void saveData(){
         dataNumerik << kelas[i].alpa << endl;
     }
     dataNumerik.close();
+    dataNama.close();
 }
 
 void loadData(){
@@ -58,7 +59,7 @@ void loadData(){
 void sortByNim(){
     for (int i = 0; i < jumlahMahasiswa - 1; i++) {
         for (int j = 0; j < jumlahMahasiswa - i - 1; j++) {
-            if (kelas[j].nim > kelas[j + 1].nim) {
+            if (kelas[j].nim < kelas[j + 1].nim) {
                 mahasiswa tempIndex = kelas[j];
                 kelas[j] = kelas[j + 1];
                 kelas[j + 1] = tempIndex;
@@ -68,16 +69,15 @@ void sortByNim(){
 }
 
 int searchByNim(long nim){
-    int left = 0, right = jumlahMahasiswa - 1;
-    while (left <= right) {
-        int mid = left + (right - left) / 2;
-
+    int low = 0, high = jumlahMahasiswa - 1;
+    while (low <= high) {
+        int mid = (high + low) / 2;
         if (kelas[mid].nim == nim) {
             return mid;
         } else if (kelas[mid].nim < nim) {
-            left = mid + 1;
-        } else {
-            right = mid - 1;
+            low = mid + 1;
+        } else if (kelas[mid].nim > nim) {
+            high = mid - 1;
         }
     }
     return -1;
@@ -134,8 +134,8 @@ int main()
         case '2':
             long cariNim;
             char persetujuan;
-            cout << "JUMLAH PERTEMUAN = " << pertemuan << endl;
             loadData();
+            cout << "JUMLAH PERTEMUAN = " << pertemuan << endl;
             sortByNim();
             // MENAMPILKAN REKAP PRESENSI START
             for(int i=0; i<jumlahMahasiswa; i++){
